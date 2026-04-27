@@ -9,6 +9,9 @@ LD      := lld-18
 # LIBC_DIR     := /path/to/libc
 # GCC_LIB_DIR  := /path/to/gcc_libs
 
+SRC_DIR := src
+INC_DIR := inc
+
 # --- Target Architecture Flags ---
 TARGET_FLAGS := --target=riscv64-unknown-elf \
                 -march=rv64gcv \
@@ -32,11 +35,11 @@ LDFLAGS := -L$(LIBC_DIR) \
            -static
 
 # --- Combined CFLAGS ---
-CFLAGS := $(TARGET_FLAGS) $(SYSROOT_FLAGS) $(TUNING_FLAGS)
+CFLAGS := $(TARGET_FLAGS) $(SYSROOT_FLAGS) $(TUNING_FLAGS) -I$(INC_DIR)
 
 # --- Build Rules ---
 TARGET := dgemm_riscv
-SRC    := dgemm.c
+SRC    := $(SRC_DIR)/dgemm.c
 
 all: $(TARGET)
 
