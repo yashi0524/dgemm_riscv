@@ -72,7 +72,7 @@ int main() {
 
     double alpha = 1.0;
     double beta = 0.0;
-
+  
     printf("misa = 0x%016lX\n", READ_CSR(misa));
 
     printf("Starting Scalar DGEMM...\n\n");
@@ -82,14 +82,14 @@ int main() {
 
     scalar_dgemm(M, N, K, alpha, A, K, B, N, beta, C, N);
 
-    //cycle_count = READ_CSR(mcycle) - cycle_count;
     cycle_count = READ_CSR(mcycle);
     inst_count = READ_CSR(MINSTRET);
 
-
+#if 0    
     print_matrix("A", A, M, K);
     print_matrix("B", B, K, N);
     print_matrix("C (Result)", C, M, N);
+#endif
 
     printf("mcycle = %llu\n", cycle_count);
     printf("inst_count = %llu\n", inst_count);
