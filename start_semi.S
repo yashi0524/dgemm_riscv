@@ -39,6 +39,19 @@ _start:
     bltu    a0, a1, .Lbss_loop
 .Lbss_done:
 
+  /* Copy .data from flash (LMA) to RAM (VMA) */                                                                
+    la      t0, _data_load                                                                                        
+    la      t1, _data_start                                   
+    la      t2, _data_end                                                                                         
+    beq     t1, t2, .Ldata_done                               
+  .Ldata_loop:
+    ld      t3, 0(t0)                                                                                             
+    sd      t3, 0(t1)
+    addi    t0, t0, 8                                                                                             
+    addi    t1, t1, 8                                         
+    bltu    t1, t2, .Ldata_loop
+  .Ldata_done:                   
+
     li      a0, 0
     li      a1, 0
     li      a2, 0

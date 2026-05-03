@@ -52,7 +52,7 @@
             "path": "system.workload",
             "auto_reset_vect": true,
             "bare_metal": true,
-            "bootloader": "./dgemm_riscv",
+            "bootloader": "/home/ajno5/work/2_pattern/dgemm/dgemm_riscv",
             "eventq_index": 0,
             "remote_gdb_port": "#7000",
             "reset_vect": 0,
@@ -71,7 +71,7 @@
                 "stdout": "stdout",
                 "time": "Thu Jan  1 00:00:00 2009"
             },
-            "wait_for_remote_gdb": true
+            "wait_for_remote_gdb": false
         },
         "clk_domain": {
             "type": "SrcClockDomain",
