@@ -1,20 +1,12 @@
-clang-18 --target=riscv64-unknown-elf -march=rv64gcv -mabi=lp64d --sysroot=/home/ajno5/work/1_toolchain/xpack/xpack-riscv-none-elf-gcc-13.2.0-2/riscv-none-elf --gcc-toolchain=/home/ajno5/work/1_toolchain/xpack/xpack-riscv-none-elf-gcc-13.2.0-2 -B/home/ajno5/work/1_toolchain/xpack/xpack-riscv-none-elf-gcc-13.2.0-2/riscv-none-elf/lib/rv64imafdc_zicsr/lp64d -B/home/ajno5/work/1_toolchain/xpack/xpack-riscv-none-elf-gcc-13.2.0-2/bin/../lib/gcc/riscv-none-elf/13.2.0/rv64imafdc_zicsr/lp64d -O3 -mllvm -force-vector-width=256 -Rpass=loop-vectorize  -Iinc -L/home/ajno5/work/1_toolchain/xpack/xpack-riscv-none-elf-gcc-13.2.0-2/riscv-none-elf/lib/rv64imafdc_zicsr/lp64d -L/home/ajno5/work/1_toolchain/xpack/xpack-riscv-none-elf-gcc-13.2.0-2/bin/../lib/gcc/riscv-none-elf/13.2.0/rv64imafdc_zicsr/lp64d -fuse-ld=lld-18 -static -o dgemm_riscv src/dgemm.c
-src/dgemm.c:74:32: warning: format specifies type 'unsigned int' but the argument has type 'unsigned long' [-Wformat]
-   74 |     printf("misa = 0x%016X\n", READ_CSR(misa));
-      |                      ~~~~~     ^~~~~~~~~~~~~~
-      |                      %016lX
-inc/utils.h:7:23: note: expanded from macro 'READ_CSR'
-    7 | #define READ_CSR(reg) ({ unsigned long __v; \
-      |                       ^~~~~~~~~~~~~~~~~~~~~~~
-    8 |     asm volatile ("csrr %0, " #reg : "=r" (__v)); __v; })
-      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src/dgemm.c:28:9: remark: vectorized loop (vectorization width: 256, interleaved count: 1) [-Rpass=loop-vectorize]
-   28 |         for (int j = 0; j < n; ++j) {
+clang-18 --target=riscv64-unknown-elf -march=rv64gcv -mabi=lp64d --sysroot=/home/ajno5/work/1_toolchain/xpack/xpack-riscv-none-elf-gcc-13.2.0-2/riscv-none-elf --gcc-toolchain=/home/ajno5/work/1_toolchain/xpack/xpack-riscv-none-elf-gcc-13.2.0-2 -B/home/ajno5/work/1_toolchain/xpack/xpack-riscv-none-elf-gcc-13.2.0-2/riscv-none-elf/lib/rv64imafdc_zicsr/lp64d -B/home/ajno5/work/1_toolchain/xpack/xpack-riscv-none-elf-gcc-13.2.0-2/bin/../lib/gcc/riscv-none-elf/13.2.0/rv64imafdc_zicsr/lp64d -O3 -mllvm -force-vector-width=256 -Rpass=loop-vectorize -fno-asynchronous-unwind-tables -fno-unwind-tables -Iinc -L/home/ajno5/work/1_toolchain/xpack/xpack-riscv-none-elf-gcc-13.2.0-2/riscv-none-elf/lib/rv64imafdc_zicsr/lp64d -L/home/ajno5/work/1_toolchain/xpack/xpack-riscv-none-elf-gcc-13.2.0-2/bin/../lib/gcc/riscv-none-elf/13.2.0/rv64imafdc_zicsr/lp64d -fuse-ld=lld-18 -static -nostdlib -Wl,--icf=none -Wl,--no-relax -T linker_semi.ld \
+    -o dgemm_riscv start_semi.S src/dgemm.c \
+    -lc -lm -lgcc
+src/dgemm.c:36:9: remark: vectorized loop (vectorization width: 256, interleaved count: 1) [-Rpass=loop-vectorize]
+   36 |         for (int j = 0; j < n; ++j) {
       |         ^
-src/dgemm.c:35:13: remark: vectorized loop (vectorization width: 256, interleaved count: 1) [-Rpass=loop-vectorize]
-   35 |             for (int j = 0; j < n; ++j) {
+src/dgemm.c:43:13: remark: vectorized loop (vectorization width: 256, interleaved count: 1) [-Rpass=loop-vectorize]
+   43 |             for (int j = 0; j < n; ++j) {
       |             ^
-src/dgemm.c:28:9: remark: vectorized loop (vectorization width: 256, interleaved count: 1) [-Rpass=loop-vectorize]
-   28 |         for (int j = 0; j < n; ++j) {
+src/dgemm.c:36:9: remark: vectorized loop (vectorization width: 256, interleaved count: 1) [-Rpass=loop-vectorize]
+   36 |         for (int j = 0; j < n; ++j) {
       |         ^
-1 warning generated.

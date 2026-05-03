@@ -5,9 +5,15 @@
 #include "platform.h"
 
 // Matrix dimensions
+#if 0
 #define M 4
 #define N 4
 #define K 4
+#else
+#define M 16
+#define N 16
+#define K 16
+#endif
 
 unsigned long long cycle_count, inst_count;
 
@@ -77,13 +83,13 @@ int main() {
 
     printf("Starting Scalar DGEMM...\n\n");
 
-    WRITE_CSR(0, MINSTRET);
-    WRITE_CSR(0, mcycle);
+    cycle_count = READ_CSR(mcycle);
+    inst_count = READ_CSR(MINSTRET);
 
     scalar_dgemm(M, N, K, alpha, A, K, B, N, beta, C, N);
 
-    cycle_count = READ_CSR(mcycle);
-    inst_count = READ_CSR(MINSTRET);
+    cycle_count = READ_CSR(mcycle) - cycle_count;
+    inst_count = READ_CSR(MINSTRET) - inst_count;
 
 #if 0    
     print_matrix("A", A, M, K);
