@@ -16,6 +16,8 @@
 #endif
 
 unsigned long long cycle_count, inst_count;
+unsigned long long hpmcounter[32] = {0};
+
 
 void scalar_dgemm(int , int , int , 
                   double , const double *, int ,
@@ -85,11 +87,13 @@ int main() {
 
     cycle_count = READ_CSR(mcycle);
     inst_count = READ_CSR(MINSTRET);
+    //WRITE_CSR(1, hpmcounter3);
 
     scalar_dgemm(M, N, K, alpha, A, K, B, N, beta, C, N);
 
     cycle_count = READ_CSR(mcycle) - cycle_count;
     inst_count = READ_CSR(MINSTRET) - inst_count;
+    //hpmcounter[3] = READ_CSR(hpmcounter3);
 
 #if 0    
     print_matrix("A", A, M, K);
@@ -99,7 +103,7 @@ int main() {
 
     printf("mcycle = %llu\n", cycle_count);
     printf("inst_count = %llu\n", inst_count);
-
+    printf("hpmcounter[3] = %llu\n", hpmcounter[3]);
 
     return 0;
 }

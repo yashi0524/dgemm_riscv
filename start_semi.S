@@ -29,6 +29,9 @@ _start:
     la      gp, __global_pointer$
     .option pop
 
+    la      t0, trap_entry
+    csrw    mtvec, t0
+
     /* Zero BSS */
     la      a0, _bss_start
     la      a1, _bss_end
@@ -156,6 +159,91 @@ _write:
     li      a0, 0
     ret
     .size   _write, . - _write
+
+
+/* ================================================================== */
+/* trap_entry — M-mode trap handler                                    */
+/* Reads mcause, formats as hex, prints via semihosting, then exits.  */
+/* Sequence tag: 3 x nop (write), 5 x nop (exit) — unique to trap    */
+/* ================================================================== */
+    .section .text.trap, "ax", @progbits
+    .globl  trap_entry
+    .type   trap_entry, @function
+    .align  2
+trap_entry:
+    addi    sp, sp, -48
+    sd      ra, 40(sp)
+    sd      a0, 32(sp)
+    sd      a1, 24(sp)
+    sd      a2, 16(sp)
+    sd      a3,  8(sp)
+    sd      t0,  0(sp)
+
+    /* fill mcause as 16 hex digits into trap_mcause_hex */
+    csrr    a0, mcause
+    la      a1, trap_mcause_hex + 15
+    li      a2, 16
+.Ltrap_hexloop:
+    andi    a3, a0, 0xf
+    li      t0, 10
+    blt     a3, t0, .Ltrap_digit
+    addi    a3, a3, ('a' - 10)
+    j       .Ltrap_store
+.Ltrap_digit:
+    addi    a3, a3, '0'
+.Ltrap_store:
+    sb      a3, 0(a1)
+    addi    a1, a1, -1
+    srli    a0, a0, 4
+    addi    a2, a2, -1
+    bnez    a2, .Ltrap_hexloop
+
+    /* SYS_WRITE0: print trap_msg (null-terminated) */
+    li      a0, SYS_WRITE0
+    la      a1, trap_msg
+    .option push
+    .option norvc
+    .word   0x01f01013              /* slli x0, x0, 0x1f  PREFIX  */
+    .word   0x00100073              /* ebreak              TRIGGER */
+    .word   0x40705013              /* srai x0, x0, 7     SUFFIX  */
+    .word   0x00000013              /* nop  tag=1                  */
+    .word   0x00000013              /* nop  tag=2                  */
+    .word   0x00000013              /* nop  tag=3                  */
+    .option pop
+
+    /* SYS_EXIT: terminate simulation */
+    li      t0, ADP_STOPPED_APP_EXIT
+    addi    sp, sp, -16
+    sd      t0, 0(sp)
+    sd      zero, 8(sp)
+    li      a0, SYS_EXIT
+    mv      a1, sp
+    .option push
+    .option norvc
+    .word   0x01f01013              /* slli x0, x0, 0x1f  PREFIX  */
+    .word   0x00100073              /* ebreak              TRIGGER */
+    .word   0x40705013              /* srai x0, x0, 7     SUFFIX  */
+    .word   0x00000013              /* nop  tag=1                  */
+    .word   0x00000013              /* nop  tag=2                  */
+    .word   0x00000013              /* nop  tag=3                  */
+    .word   0x00000013              /* nop  tag=4                  */
+    .word   0x00000013              /* nop  tag=5                  */
+    .option pop
+    addi    sp, sp, 16
+
+.Ltrap_halt:
+    wfi
+    j       .Ltrap_halt
+    .size   trap_entry, . - trap_entry
+
+
+/* trap message — in .data so trap_mcause_hex is writable at runtime */
+    .section .data
+    .align  3
+trap_msg:
+    .ascii  "\nTRAP: mcause=0x"
+trap_mcause_hex:
+    .ascii  "0000000000000000\n\0"
 
 
 /* ================================================================== */
