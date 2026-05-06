@@ -32,6 +32,10 @@ _start:
     la      t0, trap_entry
     csrw    mtvec, t0
 
+    /* Enable FP (mstatus.FS=Initial) and vector (mstatus.VS=Initial) */
+    li      t0, 0x2200          /* FS[14:13]=01, VS[10:9]=01 */
+    csrs    mstatus, t0
+
     /* Zero BSS */
     la      a0, _bss_start
     la      a1, _bss_end
@@ -163,40 +167,70 @@ _write:
 
 /* ================================================================== */
 /* trap_entry — M-mode trap handler                                    */
-/* Reads mcause, formats as hex, prints via semihosting, then exits.  */
+/* Dumps mcause, mepc, mtval via semihosting, then exits.             */
 /* Sequence tag: 3 x nop (write), 5 x nop (exit) — unique to trap    */
 /* ================================================================== */
-    .section .text.trap, "ax", @progbits
+    .section .text.init, "ax", @progbits
     .globl  trap_entry
     .type   trap_entry, @function
     .align  2
 trap_entry:
-    addi    sp, sp, -48
-    sd      ra, 40(sp)
-    sd      a0, 32(sp)
-    sd      a1, 24(sp)
-    sd      a2, 16(sp)
-    sd      a3,  8(sp)
-    sd      t0,  0(sp)
+    addi    sp, sp, -32
+    sd      a0, 24(sp)
+    sd      a1, 16(sp)
+    sd      a2,  8(sp)
+    sd      a3,  0(sp)
 
-    /* fill mcause as 16 hex digits into trap_mcause_hex */
+    /* fill mcause */
     csrr    a0, mcause
     la      a1, trap_mcause_hex + 15
     li      a2, 16
-.Ltrap_hexloop:
+.Ltrap_hex0:
     andi    a3, a0, 0xf
     li      t0, 10
-    blt     a3, t0, .Ltrap_digit
+    blt     a3, t0, .Ltrap_d0
     addi    a3, a3, ('a' - 10)
-    j       .Ltrap_store
-.Ltrap_digit:
-    addi    a3, a3, '0'
-.Ltrap_store:
-    sb      a3, 0(a1)
+    j       .Ltrap_s0
+.Ltrap_d0: addi a3, a3, '0'
+.Ltrap_s0: sb a3, 0(a1)
     addi    a1, a1, -1
     srli    a0, a0, 4
     addi    a2, a2, -1
-    bnez    a2, .Ltrap_hexloop
+    bnez    a2, .Ltrap_hex0
+
+    /* fill mepc */
+    csrr    a0, mepc
+    la      a1, trap_mepc_hex + 15
+    li      a2, 16
+.Ltrap_hex1:
+    andi    a3, a0, 0xf
+    li      t0, 10
+    blt     a3, t0, .Ltrap_d1
+    addi    a3, a3, ('a' - 10)
+    j       .Ltrap_s1
+.Ltrap_d1: addi a3, a3, '0'
+.Ltrap_s1: sb a3, 0(a1)
+    addi    a1, a1, -1
+    srli    a0, a0, 4
+    addi    a2, a2, -1
+    bnez    a2, .Ltrap_hex1
+
+    /* fill mtval */
+    csrr    a0, mtval
+    la      a1, trap_mtval_hex + 15
+    li      a2, 16
+.Ltrap_hex2:
+    andi    a3, a0, 0xf
+    li      t0, 10
+    blt     a3, t0, .Ltrap_d2
+    addi    a3, a3, ('a' - 10)
+    j       .Ltrap_s2
+.Ltrap_d2: addi a3, a3, '0'
+.Ltrap_s2: sb a3, 0(a1)
+    addi    a1, a1, -1
+    srli    a0, a0, 4
+    addi    a2, a2, -1
+    bnez    a2, .Ltrap_hex2
 
     /* SYS_WRITE0: print trap_msg (null-terminated) */
     li      a0, SYS_WRITE0
@@ -235,15 +269,6 @@ trap_entry:
     wfi
     j       .Ltrap_halt
     .size   trap_entry, . - trap_entry
-
-
-/* trap message — in .data so trap_mcause_hex is writable at runtime */
-    .section .data
-    .align  3
-trap_msg:
-    .ascii  "\nTRAP: mcause=0x"
-trap_mcause_hex:
-    .ascii  "0000000000000000\n\0"
 
 
 /* ================================================================== */
@@ -311,6 +336,26 @@ _getpid:
 _kill:
     li      a0, 0
     j       _exit
+
+
+/* trap message — in .data so hex fields are writable at runtime */
+/* Placed after all .text.init code so the section switch doesn't  */
+/* accidentally absorb the Newlib stubs into .data.                */
+/* ================================================================== */
+/* DATA                                                                */
+/* ================================================================== */
+    .section .data
+    .align  3
+trap_msg:
+    .ascii  "\nTRAP: mcause=0x"
+trap_mcause_hex:
+    .ascii  "0000000000000000"
+    .ascii  "  mepc=0x"
+trap_mepc_hex:
+    .ascii  "0000000000000000"
+    .ascii  "  mtval=0x"
+trap_mtval_hex:
+    .ascii  "0000000000000000\n\0"
 
 
 /* ================================================================== */

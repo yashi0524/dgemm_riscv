@@ -5,7 +5,7 @@
 #include "platform.h"
 
 // Matrix dimensions
-#if 0
+#if 1
 #define M 4
 #define N 4
 #define K 4
