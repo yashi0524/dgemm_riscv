@@ -5,7 +5,7 @@
 #include "platform.h"
 
 // Matrix dimensions
-#if 1
+#if 0
 #define M 4
 #define N 4
 #define K 4
@@ -87,13 +87,17 @@ int main() {
 
     cycle_count = READ_CSR(mcycle);
     inst_count = READ_CSR(MINSTRET);
-    //WRITE_CSR(1, hpmcounter3);
+    WRITE_CSR(61, mhpmevent3);
+    WRITE_CSR(64, mhpmevent4);
+    WRITE_CSR(65, mhpmevent5);
 
     scalar_dgemm(M, N, K, alpha, A, K, B, N, beta, C, N);
 
     cycle_count = READ_CSR(mcycle) - cycle_count;
     inst_count = READ_CSR(MINSTRET) - inst_count;
-    //hpmcounter[3] = READ_CSR(hpmcounter3);
+    hpmcounter[3] = READ_CSR(mhpmcounter3);
+    hpmcounter[4] = READ_CSR(mhpmcounter4);
+    hpmcounter[5] = READ_CSR(mhpmcounter5);
 
 #if 0    
     print_matrix("A", A, M, K);
@@ -103,7 +107,9 @@ int main() {
 
     printf("mcycle = %llu\n", cycle_count);
     printf("inst_count = %llu\n", inst_count);
-    printf("hpmcounter[3] = %llu\n", hpmcounter[3]);
+    printf("hpmcounter[3]: Vector = %llu\n", hpmcounter[3]);
+    printf("hpmcounter[4]: VectorLoad = %llu\n", hpmcounter[4]);
+    printf("hpmcounter[5]: VectorStore = %llu\n", hpmcounter[5]);
 
     return 0;
 }
