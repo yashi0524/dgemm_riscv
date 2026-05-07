@@ -1,0 +1,29 @@
+warn: Base 10 memory/cache size 512MB will be cast to base 2 size 512MiB.
+warn: Base 10 memory/cache size 64kB will be cast to base 2 size 64KiB.
+warn: Base 10 memory/cache size 64kB will be cast to base 2 size 64KiB.
+Global frequency set at 1000000000000 ticks per second
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (512 Mbytes)
+src/arch/generic/semihosting.cc:130: info: Semihosting: Shifting elapsed ticks by 8 bits.
+src/arch/riscv/isa.cc:321: info: RVV enabled, VLEN = 256 bits, ELEN = 64 bits
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/base/remote_gdb.cc:418: warn: Sockets disabled, not accepting gdb connections
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 25.1.0.0
+gem5 compiled Apr 16 2026 01:18:10
+gem5 started May  7 2026 09:36:43
+gem5 executing on vmserver, pid 127989
+command line: /home/ajno5/work/0_simulator/gem5/1_build/gem5/build/RISCV/gem5.opt /home/ajno5/work/2_pattern/dgemm/config/gem5_riscv_demo_riscv_baremetal_semihost.py /home/ajno5/work/2_pattern/dgemm/dgemm_riscv
+
+info: Standard input is not a terminal, disabling listeners.
+Starting bare-metal RISC-V M-mode simulation...
+misa = 0x800000000034112D
+Starting Scalar DGEMM...
+
+mcycle = 35611
+inst_count = 12268
+hpmcounter[3]: Vector = 78831
+hpmcounter[4]: VectorLoad = 78845
+hpmcounter[5]: VectorStore = 78853
+Exit @ tick 109061000: semi:ADP_Stopped_ApplicationExit

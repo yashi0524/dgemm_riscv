@@ -1,0 +1,24 @@
+# dgemm_riscv run log
+# kernel: scalar DGEMM, C = alpha*A*B + beta*C, M=N=K=16, FP64
+# build:  clang-18, -march=rv64gcv -O3 -mllvm -force-vector-width=4
+# binary: /home/ajno5/work/2_pattern/dgemm/dgemm_riscv
+# note:   all CSR values are kernel-only deltas (READ before/after scalar_dgemm)
+#         except hpmcounterN which are read only at the end (not delta)
+
+# --- whisper (functional simulator, VLEN=512) ---
+# date: 2026-05-07
+# config: /home/ajno5/work/2_pattern/dgemm/config/whisper_rv64gcv_config.json
+mcycle          =  12,267
+inst_retired    =  12,268   # minstret CSR delta
+hpmcounter[3]   =   1,616   # Vector      (event 61: vector compute instructions)
+hpmcounter[4]   =   2,112   # VectorLoad  (event 64: vector load instructions)
+hpmcounter[5]   =   1,088   # VectorStore (event 65: vector store instructions)
+
+# --- gem5 TimingSimpleCPU (cycle-accurate, 1 GHz, 64KB L1 I/D cache, DDR3-1600) ---
+# date: 2026-05-07
+# config: /home/ajno5/work/2_pattern/dgemm/config/gem5_riscv_demo_riscv_baremetal_semihost.py
+mcycle          =  35,611
+minstret        =  12,268   # inst_count CSR delta
+# note: gem5 hpmcounterN values are NOT event counts (TimingSimpleCPU does not
+#       implement HPM events); they reflect raw cycle accumulation from sim start.
+#       Use whisper hpmcounterN for instruction-level event counts.

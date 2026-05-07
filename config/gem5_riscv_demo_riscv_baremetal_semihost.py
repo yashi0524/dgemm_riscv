@@ -17,9 +17,31 @@ system.cpu = RiscvTimingSimpleCPU()
 # --- Memory bus ---
 system.membus = SystemXBar()
 
-# --- Connect CPU cache ports ---
-system.cpu.icache_port = system.membus.cpu_side_ports
-system.cpu.dcache_port = system.membus.cpu_side_ports
+# --- L1 caches (64 kB each, 4-way) ---
+system.cpu.icache = Cache(
+    size="64kB",
+    assoc=4,
+    tag_latency=2,
+    data_latency=2,
+    response_latency=2,
+    mshrs=4,
+    tgts_per_mshr=20,
+)
+system.cpu.dcache = Cache(
+    size="64kB",
+    assoc=4,
+    tag_latency=2,
+    data_latency=2,
+    response_latency=2,
+    mshrs=4,
+    tgts_per_mshr=20,
+)
+
+# --- Connect CPU → L1 caches → membus ---
+system.cpu.icache.cpu_side = system.cpu.icache_port
+system.cpu.icache.mem_side = system.membus.cpu_side_ports
+system.cpu.dcache.cpu_side = system.cpu.dcache_port
+system.cpu.dcache.mem_side = system.membus.cpu_side_ports
 
 # --- Interrupt controller (no interrupt bus wiring needed for RISC-V) ---
 system.cpu.createInterruptController()
