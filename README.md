@@ -9,7 +9,7 @@
     OS        : bare-metal M-mode (semihosting I/O)
     toolchain : xpack-riscv-none-elf-gcc-13.2.0 / clang-18
     flags     : --target=riscv64-unknown-elf -march=rv64gcv -O3
-                -mllvm -force-vector-width=4
+                -mllvm -force-vector-width=8
 
 ## kernel
     operation : C = alpha*A*B + beta*C  (scalar DGEMM, i-k-j loop order)
@@ -17,9 +17,8 @@
     dtype     : double (float64)
     alpha=1.0, beta=0.0
 
-    With VLEN=512 and -force-vector-width=4, clang auto-vectorizes the inner
-    j-loop using vl=8, sew=64 (8 × FP64 = 64 bytes per vector op). This halves
-    instruction count vs the VLEN=256/vl=4 build (32 bytes per vec op).
+    Compiled with -force-vector-width=8: clang vectorizes the inner j-loop
+    with vl=8, sew=64 (8 × FP64 = 64 bytes per vector op), matching VLEN=512.
 
 ## simulation results  (kernel-only CSR deltas)
     note: mcycle/minstret are READ_CSR deltas taken before and after
@@ -110,10 +109,9 @@
        implement HPM performance events; the counters accumulate raw cycles
        from simulation start. Use whisper hpmcounterN for event counts.
 
-    2. Whisper VLEN=512 (bytes_per_vec=64) and gem5 VLEN=512 (vlen=512) now
-       match. With -force-vector-width=4 on a 16-element row, clang selects
-       vl=8 at VLEN=512 (since 16/2 = 8 elements fit one vector register),
-       issuing 64-byte vector ops instead of 32-byte at VLEN=256.
+    2. Whisper VLEN=512 (bytes_per_vec=64) and gem5 VLEN=512 (vlen=512) match.
+       -force-vector-width=8 directly instructs clang to use vl=8 (8 × FP64 =
+       64 bytes per vector op), consistent with VLEN=512.
 
     3. The 64 KB L1 caches deliver a 25× cycle reduction vs the no-cache
        baseline (891,693 → 35,611 cycles at VLEN=256). Widening to VLEN=512
