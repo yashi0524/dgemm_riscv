@@ -28,7 +28,7 @@ SYSROOT_FLAGS := --sysroot=$(TOOLCHAIN)/riscv-none-elf \
 
 # --- Compiler Flags ---
 TUNING_FLAGS := -O3 \
-                -mllvm -force-vector-width=4 \
+                -mllvm -force-vector-width=8 \
                 -Rpass=loop-vectorize \
                 -fno-asynchronous-unwind-tables \
                 -fno-unwind-tables

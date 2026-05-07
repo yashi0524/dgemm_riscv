@@ -8,17 +8,17 @@
 # --- whisper (functional simulator, VLEN=512) ---
 # date: 2026-05-07
 # config: /home/ajno5/work/2_pattern/dgemm/config/whisper_rv64gcv_config.json
-mcycle          =  12,267
-inst_retired    =  12,268   # minstret CSR delta
-hpmcounter[3]   =   1,616   # Vector      (event 61: vector compute instructions)
-hpmcounter[4]   =   2,112   # VectorLoad  (event 64: vector load instructions)
-hpmcounter[5]   =   1,088   # VectorStore (event 65: vector store instructions)
+mcycle          =   8,795
+inst_retired    =   8,796   # minstret CSR delta
+hpmcounter[3]   =   1,072   # Vector      (event 61: vector compute instructions)
+hpmcounter[4]   =   1,056   # VectorLoad  (event 64: vector load instructions)
+hpmcounter[5]   =     544   # VectorStore (event 65: vector store instructions)
 
-# --- gem5 TimingSimpleCPU (cycle-accurate, 1 GHz, 64KB L1 I/D cache, DDR3-1600) ---
+# --- gem5 TimingSimpleCPU (cycle-accurate, 1 GHz, 64KB L1 I/D cache, DDR3-1600, VLEN=512) ---
 # date: 2026-05-07
 # config: /home/ajno5/work/2_pattern/dgemm/config/gem5_riscv_demo_riscv_baremetal_semihost.py
-mcycle          =  35,611
-minstret        =  12,268   # inst_count CSR delta
+mcycle          =  26,980
+minstret        =   8,796   # inst_count CSR delta
 # note: gem5 hpmcounterN values are NOT event counts (TimingSimpleCPU does not
 #       implement HPM events); they reflect raw cycle accumulation from sim start.
 #       Use whisper hpmcounterN for instruction-level event counts.

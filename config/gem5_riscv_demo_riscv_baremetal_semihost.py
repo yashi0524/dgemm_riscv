@@ -13,6 +13,7 @@ system.m5ops_base = 0x10010000   #enables m5ops pseudo-inst decoding
 
 # --- CPU ---
 system.cpu = RiscvTimingSimpleCPU()
+system.cpu.isa = RiscvISA(vlen=512, elen=64)
 
 # --- Memory bus ---
 system.membus = SystemXBar()

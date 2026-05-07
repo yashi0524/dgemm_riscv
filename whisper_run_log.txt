@@ -7,10 +7,10 @@ Warning: Write mask of CSR VSTART changed to 0x1ff to be compatible with VLEN=51
 misa = 0x800000000034112D
 Starting Scalar DGEMM...
 
-mcycle = 12267
-inst_count = 12268
-hpmcounter[3]: Vector = 1616
-hpmcounter[4]: VectorLoad = 2112
-hpmcounter[5]: VectorStore = 1088
+mcycle = 8795
+inst_count = 8796
+hpmcounter[3]: Vector = 1072
+hpmcounter[4]: VectorLoad = 1056
+hpmcounter[5]: VectorStore = 544
 Info: Target program exited with code 1774128
-Info: Executed 28817 instructions and retired 28817 instructions in 0.01s -- 5320716 inst/s hart=0
+Info: Executed 25266 instructions and retired 25266 instructions in 0.01s -- 4886095 inst/s hart=0

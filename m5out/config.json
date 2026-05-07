@@ -52,7 +52,7 @@
             "path": "system.workload",
             "auto_reset_vect": true,
             "bare_metal": true,
-            "bootloader": "/home/ajno5/work/2_pattern/dgemm/dgemm_riscv",
+            "bootloader": "dgemm_riscv",
             "eventq_index": 0,
             "remote_gdb_port": "#7000",
             "reset_vect": 0,
@@ -145,7 +145,7 @@
                     "eventq_index": 0,
                     "privilege_mode_set": "MSU",
                     "riscv_type": "RV64",
-                    "vlen": 256,
+                    "vlen": 512,
                     "wfi_resume_on_pending": false
                 }
             ],
@@ -293,14 +293,226 @@
                 "eventq_index": 0
             },
             "workload": [],
+            "dcache": {
+                "type": "Cache",
+                "cxx_class": "gem5::Cache",
+                "name": "dcache",
+                "path": "system.cpu.dcache",
+                "addr_ranges": [
+                    "0:18446744073709551615"
+                ],
+                "assoc": 4,
+                "clk_domain": "system.clk_domain",
+                "clusivity": "mostly_incl",
+                "compressor": null,
+                "data_latency": 2,
+                "demand_mshr_reserve": 1,
+                "eventq_index": 0,
+                "is_read_only": false,
+                "max_miss_count": 0,
+                "move_contractions": true,
+                "mshrs": 4,
+                "partitioning_manager": null,
+                "power_model": [],
+                "power_state": {
+                    "type": "PowerState",
+                    "cxx_class": "gem5::PowerState",
+                    "name": "power_state",
+                    "path": "system.cpu.dcache.power_state",
+                    "clk_gate_bins": 20,
+                    "clk_gate_max": 1000000000000,
+                    "clk_gate_min": 1000,
+                    "default_state": "UNDEFINED",
+                    "eventq_index": 0,
+                    "leaders": [],
+                    "possible_states": []
+                },
+                "prefetcher": null,
+                "replace_expansions": true,
+                "replacement_policy": {
+                    "type": "LRURP",
+                    "cxx_class": "gem5::replacement_policy::LRU",
+                    "name": "replacement_policy",
+                    "path": "system.cpu.dcache.replacement_policy",
+                    "eventq_index": 0
+                },
+                "response_latency": 2,
+                "sequential_access": false,
+                "size": 65536,
+                "system": "system",
+                "tag_latency": 2,
+                "tags": {
+                    "type": "BaseSetAssoc",
+                    "cxx_class": "gem5::BaseSetAssoc",
+                    "name": "tags",
+                    "path": "system.cpu.dcache.tags",
+                    "assoc": 4,
+                    "block_size": 64,
+                    "clk_domain": "system.clk_domain",
+                    "entry_size": 64,
+                    "eventq_index": 0,
+                    "indexing_policy": {
+                        "type": "TaggedSetAssociative",
+                        "cxx_class": "gem5::TaggedSetAssociative",
+                        "name": "indexing_policy",
+                        "path": "system.cpu.dcache.tags.indexing_policy",
+                        "assoc": 4,
+                        "entry_size": 64,
+                        "eventq_index": 0,
+                        "size": 65536
+                    },
+                    "partitioning_manager": null,
+                    "power_model": [],
+                    "power_state": {
+                        "type": "PowerState",
+                        "cxx_class": "gem5::PowerState",
+                        "name": "power_state",
+                        "path": "system.cpu.dcache.tags.power_state",
+                        "clk_gate_bins": 20,
+                        "clk_gate_max": 1000000000000,
+                        "clk_gate_min": 1000,
+                        "default_state": "UNDEFINED",
+                        "eventq_index": 0,
+                        "leaders": [],
+                        "possible_states": []
+                    },
+                    "replacement_policy": "system.cpu.dcache.replacement_policy",
+                    "sequential_access": false,
+                    "size": 65536,
+                    "system": "system",
+                    "tag_latency": 2,
+                    "warmup_percentage": 0
+                },
+                "tgts_per_mshr": 20,
+                "warmup_percentage": 0,
+                "write_allocator": null,
+                "write_buffers": 8,
+                "writeback_clean": false,
+                "cpu_side": {
+                    "role": "GEM5 RESPONDER",
+                    "peer": "system.cpu.dcache_port",
+                    "is_source": "False"
+                },
+                "mem_side": {
+                    "role": "GEM5 REQUESTOR",
+                    "peer": "system.membus.cpu_side_ports[1]",
+                    "is_source": "True"
+                }
+            },
+            "icache": {
+                "type": "Cache",
+                "cxx_class": "gem5::Cache",
+                "name": "icache",
+                "path": "system.cpu.icache",
+                "addr_ranges": [
+                    "0:18446744073709551615"
+                ],
+                "assoc": 4,
+                "clk_domain": "system.clk_domain",
+                "clusivity": "mostly_incl",
+                "compressor": null,
+                "data_latency": 2,
+                "demand_mshr_reserve": 1,
+                "eventq_index": 0,
+                "is_read_only": false,
+                "max_miss_count": 0,
+                "move_contractions": true,
+                "mshrs": 4,
+                "partitioning_manager": null,
+                "power_model": [],
+                "power_state": {
+                    "type": "PowerState",
+                    "cxx_class": "gem5::PowerState",
+                    "name": "power_state",
+                    "path": "system.cpu.icache.power_state",
+                    "clk_gate_bins": 20,
+                    "clk_gate_max": 1000000000000,
+                    "clk_gate_min": 1000,
+                    "default_state": "UNDEFINED",
+                    "eventq_index": 0,
+                    "leaders": [],
+                    "possible_states": []
+                },
+                "prefetcher": null,
+                "replace_expansions": true,
+                "replacement_policy": {
+                    "type": "LRURP",
+                    "cxx_class": "gem5::replacement_policy::LRU",
+                    "name": "replacement_policy",
+                    "path": "system.cpu.icache.replacement_policy",
+                    "eventq_index": 0
+                },
+                "response_latency": 2,
+                "sequential_access": false,
+                "size": 65536,
+                "system": "system",
+                "tag_latency": 2,
+                "tags": {
+                    "type": "BaseSetAssoc",
+                    "cxx_class": "gem5::BaseSetAssoc",
+                    "name": "tags",
+                    "path": "system.cpu.icache.tags",
+                    "assoc": 4,
+                    "block_size": 64,
+                    "clk_domain": "system.clk_domain",
+                    "entry_size": 64,
+                    "eventq_index": 0,
+                    "indexing_policy": {
+                        "type": "TaggedSetAssociative",
+                        "cxx_class": "gem5::TaggedSetAssociative",
+                        "name": "indexing_policy",
+                        "path": "system.cpu.icache.tags.indexing_policy",
+                        "assoc": 4,
+                        "entry_size": 64,
+                        "eventq_index": 0,
+                        "size": 65536
+                    },
+                    "partitioning_manager": null,
+                    "power_model": [],
+                    "power_state": {
+                        "type": "PowerState",
+                        "cxx_class": "gem5::PowerState",
+                        "name": "power_state",
+                        "path": "system.cpu.icache.tags.power_state",
+                        "clk_gate_bins": 20,
+                        "clk_gate_max": 1000000000000,
+                        "clk_gate_min": 1000,
+                        "default_state": "UNDEFINED",
+                        "eventq_index": 0,
+                        "leaders": [],
+                        "possible_states": []
+                    },
+                    "replacement_policy": "system.cpu.icache.replacement_policy",
+                    "sequential_access": false,
+                    "size": 65536,
+                    "system": "system",
+                    "tag_latency": 2,
+                    "warmup_percentage": 0
+                },
+                "tgts_per_mshr": 20,
+                "warmup_percentage": 0,
+                "write_allocator": null,
+                "write_buffers": 8,
+                "writeback_clean": false,
+                "cpu_side": {
+                    "role": "GEM5 RESPONDER",
+                    "peer": "system.cpu.icache_port",
+                    "is_source": "False"
+                },
+                "mem_side": {
+                    "role": "GEM5 REQUESTOR",
+                    "peer": "system.membus.cpu_side_ports[0]",
+                    "is_source": "True"
+                }
+            },
             "dcache_port": {
                 "role": "GEM5 REQUESTOR",
-                "peer": "system.membus.cpu_side_ports[1]",
+                "peer": "system.cpu.dcache.cpu_side",
                 "is_source": "True"
             },
             "icache_port": {
                 "role": "GEM5 REQUESTOR",
-                "peer": "system.membus.cpu_side_ports[0]",
+                "peer": "system.cpu.icache.cpu_side",
                 "is_source": "True"
             }
         },
@@ -524,8 +736,8 @@
             "cpu_side_ports": {
                 "role": "GEM5 RESPONDER",
                 "peer": [
-                    "system.cpu.icache_port",
-                    "system.cpu.dcache_port",
+                    "system.cpu.icache.mem_side",
+                    "system.cpu.dcache.mem_side",
                     "system.system_port"
                 ],
                 "is_source": "False"

@@ -1,0 +1,37 @@
+# Simulator Configuration Comparison
+# gem5  : /home/ajno5/work/2_pattern/dgemm/config/gem5_riscv_demo_riscv_baremetal_semihost.py
+# whisper: /home/ajno5/work/2_pattern/dgemm/config/whisper_rv64gcv_config.json
+# date  : 2026-05-07
+
++------------------+------------------------+-----------------------------------+-----------------------------------+
+| Category         | Setting                | gem5                              | whisper                           |
++------------------+------------------------+-----------------------------------+-----------------------------------+
+| CPU              | Model                  | RiscvTimingSimpleCPU (timing)     | Functional simulator (no timing)  |
+|                  | Clock                  | 1 GHz                             | N/A                               |
+|                  | ISA string             | rv64imafdcv (via misa)            | rv64imafdcv                       |
+|                  | xlen                   | 64                                | 64                                |
+|                  | misa reset             | 0x800000000034112D                | 0x800000000034112D                |
++------------------+------------------------+-----------------------------------+-----------------------------------+
+| VPU              | VLEN                   | 512 bits  (vlen=512)              | 512 bits  (bytes_per_vec=64)      |
+|                  | ELEN                   | 64 bits   (elen=64)               | 64 bits   (max_bytes_per_elem=8)  |
+|                  | Min element width      | —                                 | 8 bits    (min_bytes_per_elem=1)  |
++------------------+------------------------+-----------------------------------+-----------------------------------+
+| Memory           | Model                  | DDR3-1600 8x8 (timing)           | None (functional)                 |
+|                  | Size                   | 512 MB                            | N/A                               |
+|                  | Peak BW                | 12.8 GB/s                         | N/A                               |
++------------------+------------------------+-----------------------------------+-----------------------------------+
+| Cache            | L1 I-cache             | 64 KB, 4-way, 2-cycle latency     | None                              |
+|                  | L1 D-cache             | 64 KB, 4-way, 2-cycle latency     | None                              |
++------------------+------------------------+-----------------------------------+-----------------------------------+
+| Perf counters    | HPM events             | Not implemented (invalid counts)  | 8 M-mode regs                     |
+|                  | Tracked events         | —                                 | InstCommited(1), Fp(10),          |
+|                  |                        |                                   | FpDouble(11), Vector(61),         |
+|                  |                        |                                   | VectorLoad(64), VectorStore(65)   |
++------------------+------------------------+-----------------------------------+-----------------------------------+
+
+Notes:
+  - VPU settings now match: both simulators use VLEN=512, ELEN=64.
+  - gem5 models cycle-accurate timing (DDR3 latency, L1 cache stalls);
+    whisper executes functionally with no latency model.
+  - gem5 hpmcounterN values are NOT valid event counts; use whisper for
+    instruction-level performance event counts.
